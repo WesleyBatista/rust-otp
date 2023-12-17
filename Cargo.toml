@@ -1,5 +1,5 @@
 [package]
-name = "otp"
+name = "rust-otp"
 version = "1.0.0"
 authors = ["Tim Dumol <tim@timdumol.com>"]
 description = "A Rust library for performing the HMAC-based One-Time Password (HOTP) and Time-based One-Time Password (TOTP) algorithms."
