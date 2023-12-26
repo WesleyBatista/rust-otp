@@ -1,7 +1,5 @@
 # rust-otp
 
-[![Build Status](https://travis-ci.org/TimDumol/rust-otp.svg?branch=master)](https://travis-ci.org/TimDumol/rust-otp)
-
 `rust-otp` is a Rust library for performing the [HMAC-based One-time Passsword Algorithm](http://en.wikipedia.org/wiki/HMAC-based_One-time_Password_Algorithm) as per [RFC 4226](http://tools.ietf.org/html/rfc4226) and the [Time-based One-time Password Algorithm](http://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm) as per [RFC 6238](http://tools.ietf.org/html/rfc6238). These are also the algorithms many mobile-based 2FA apps, such as [Google Authenticator](https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2) and [Authy](https://www.authy.com/), use to generate 2FA codes.
 
 # Installation
@@ -12,7 +10,7 @@ Just add the library as a dependency by adding the following section to your
 ```toml
 [dependencies.otp]
 
-git = "https://github.com/TimDumol/rust-otp"
+git = "https://github.com/WesleyBatista/rust-otp"
 ```
 
 # Usage
