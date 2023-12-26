@@ -1,20 +1,20 @@
-#![crate_name="otp"]
-#![crate_type="lib"]
+#![crate_name = "rust_otp"]
+#![crate_type = "lib"]
 
-use std::time::{SystemTime, SystemTimeError};
-use std::convert::TryInto;
-use data_encoding::{BASE32_NOPAD, DecodeError};
+use data_encoding::{DecodeError, BASE32_NOPAD};
 use err_derive::Error;
 use ring::hmac;
+use std::convert::TryInto;
+use std::time::{SystemTime, SystemTimeError};
 
 #[derive(Debug, Error)]
 pub enum Error {
-    #[error(display="invalid time provided")]
+    #[error(display = "invalid time provided")]
     InvalidTimeError(#[error(source)] SystemTimeError),
-    #[error(display="invalid digest provided: {:?}", _0)]
+    #[error(display = "invalid digest provided: {:?}", _0)]
     InvalidDigest(Vec<u8>),
-    #[error(display="invalid secret provided")]
-    InvalidSecret(#[error(source)] DecodeError)
+    #[error(display = "invalid secret provided")]
+    InvalidSecret(#[error(source)] DecodeError),
 }
 
 /// Decodes a secret (given as an RFC4648 base32-encoded ASCII string)
@@ -33,11 +33,11 @@ fn calc_digest(decoded_secret: &[u8], counter: u64) -> hmac::Tag {
 fn encode_digest(digest: &[u8]) -> Result<u32, Error> {
     let offset = match digest.last() {
         Some(x) => *x & 0xf,
-        None => return Err(Error::InvalidDigest(Vec::from(digest)))
+        None => return Err(Error::InvalidDigest(Vec::from(digest))),
     } as usize;
-    let code_bytes: [u8; 4] = match digest[offset..offset+4].try_into() {
+    let code_bytes: [u8; 4] = match digest[offset..offset + 4].try_into() {
         Ok(x) => x,
-        Err(_) => return Err(Error::InvalidDigest(Vec::from(digest)))
+        Err(_) => return Err(Error::InvalidDigest(Vec::from(digest))),
     };
     let code = u32::from_be_bytes(code_bytes);
     Ok((code & 0x7fffffff) % 1_000_000)
@@ -63,9 +63,9 @@ fn make_totp_helper(secret: &str, time_step: u64, skew: i64, time: u64) -> Resul
 pub fn make_totp(secret: &str, time_step: u64, skew: i64) -> Result<u32, Error> {
     let now = SystemTime::now();
     let time_since_epoch = now.duration_since(SystemTime::UNIX_EPOCH)?;
-    match make_totp_helper(secret, time_step, skew, time_since_epoch.as_secs() ) {
+    match make_totp_helper(secret, time_step, skew, time_since_epoch.as_secs()) {
         Ok(d) => Ok(d),
-        Err(err) => return Err(err)
+        Err(err) => return Err(err),
     }
 }
 
@@ -82,9 +82,21 @@ mod tests {
 
     #[test]
     fn totp() {
-        assert_eq!(make_totp_helper("BASE32SECRET3232", 30, 0, 0).unwrap(), 260182);
-        assert_eq!(make_totp_helper("BASE32SECRET3232", 3600, 0, 7).unwrap(), 260182);
-        assert_eq!(make_totp_helper("BASE32SECRET3232", 30, 0, 35).unwrap(), 55283);
-        assert_eq!(make_totp_helper("BASE32SECRET3232", 1, -2, 1403).unwrap(), 316439);
+        assert_eq!(
+            make_totp_helper("BASE32SECRET3232", 30, 0, 0).unwrap(),
+            260182
+        );
+        assert_eq!(
+            make_totp_helper("BASE32SECRET3232", 3600, 0, 7).unwrap(),
+            260182
+        );
+        assert_eq!(
+            make_totp_helper("BASE32SECRET3232", 30, 0, 35).unwrap(),
+            55283
+        );
+        assert_eq!(
+            make_totp_helper("BASE32SECRET3232", 1, -2, 1403).unwrap(),
+            316439
+        );
     }
 }

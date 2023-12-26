@@ -11,7 +11,7 @@ license = "MIT"
 edition = "2018"
 
 [lib]
-name = "otp"
+name = "rust_otp"
 
 [dependencies]
 ascii = "1.1.0"
